@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        
+        <title>APARTRACK</title>
+        
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/swipebox.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/carousel.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/custom.css" rel="stylesheet" type="text/css"/>
+        <style>
+            .image-header
+            {
+                width:120px;
+                height:120px;
+                border-radius:120px;
+                margin-bottom:30px;
+                margin-left:auto;
+                margin-right:auto;
+                z-index:4;
+                border:solid 4px rgba(255,255,255,0.9);
+            }
+            
+            .server-action-menu 
+            {
+                background-color: transparent;
+                background-image: linear-gradient(to bottom, rgba(62, 183, 211, 1) 100%, rgba(62, 183, 211, 1) 100%);
+                background-repeat: repeat;
+                border-radius:4px;
+                border: 1px solid gray;
+                padding: 5px;
+            }
+                  
+            
+            
+        </style>
+    </head>
+    <body style="background-color:#f2f2f2; text-align:center;">       
+        <div id="myCarousel" class="carousel slide container-fluid" data-ride="carousel" style="height: 320px;">
+            <ol class="carousel-indicators" id="carousel-indicators">
+            </ol>
+            <div class="carousel-inner" role="listbox" style="height: 320px;" id="carousel-images">
+            </div>
+            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">ANTERIOR</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">SIGUIENTE</span>
+            </a>
+        </div>
+        
+        
+        
+        <div class="container" style="margin-bottom: 10px; ">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="padding-left: 0px; padding-right: 2px; margin-bottom: 15px;">
+                        <button class="btn btn-lg btn-primary" role="button" style="width:100%; font-size: 10px; background-color: rgba(62, 183, 211, 1);; color: black; ">Alquiler (10)</button>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"  style="padding-left: 2px; padding-right: 0px; margin-bottom: 15px;">
+                        <button class="btn btn-lg btn-primary" role="button" style="width:100%; font-size: 10px; background-color: rgba(62, 183, 211, 1); color: black;">Venta (0)</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="section-title line-style no-margin">
+                        <h3 class="title">Detalles</h3>
+                    </div>
+                    <div class="box-ads">
+                        <dl class="detail" id="detail">
+                        </dl>  
+                    </div>  
+                </div>
+            </div>
+            <div class="row" id="shortcode">
+                <div class="col-sm-12 col-md-12">
+                    <section class="shortcode-box" id="shortcode-icons">
+                        <div class="section-title line-style no-margin"><h3 class="title">Caracteristicas</h3></div>
+                        <div id="caracteristicas" class="row" style="border: 1px solid #E5E5E5; position: relative; padding-top: 13px; margin: 8px 0 20px 16px; margin-left: 0;}">
+                        </div>
+                    </section>    
+                </div>
+            </div>
+            <div class="row" id="shortcode">
+                <div class="col-sm-12 col-md-12">
+                    <section class="shortcode-box" id="shortcode-icons">
+                        <div class="section-title line-style no-margin"><h3 class="title">Alrededores</h3></div>
+                        <div id="alrededores" class="row" style="border: 1px solid #E5E5E5; position: relative; padding-top: 13px; margin: 8px 0 20px 16px; margin-left: 0;}">
+                        </div>
+                    </section>    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="section-title line-style no-margin">
+                        <h3 class="title">Ubicacion</h3>
+                    </div>
+                    <div class="box-ads" id="mapa">
+
+                    </div>  
+                </div>
+            </div>
+        </div>
+        <script src="js/jquery-2.2.3.js" type="text/javascript"></script>
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/jquery.swipebox.min.js" type="text/javascript"></script>
+        <script src="js/configuracion.js" type="text/javascript"></script>
+        <script>
+            var METODO                      = "LEER_INFORMACION_INMUEBLE"; 
+            var DATA                        = null;
+            var VALOR                       = null;
+            
+            var INFORMACION_INMUEBLE        = null;
+            var NOMBRE                      = null;
+            var CONSTRUCTOR                 = null;
+            var NUM_UNIDADES                = null;
+            var FECHA_CONSTRUCCION          = null;
+            var ALTURA                      = null;
+            var PISOS                       = null;
+            var NUM_ELEVADORES              = null;
+            var LATITUD                     = null;
+            var LONGITUD                    = null;
+            
+            var IMAGENES_INMUEBLE           = null;
+            
+            var CARACTERISTICAS_INMUEBLE    = null;
+            
+            var ALREDEDORES_INMUEBLE        = null;
+            
+
+            
+
+            var qs = (function(a) 
+            {
+                if (a === "") return {};
+                var b = {};
+                for (var i = 0; i < a.length; ++i)
+                {
+                    var p=a[i].split('=', 2);
+                    if (p.length === 1)
+                    {
+                        b[p[0]] = "";
+                    }   
+                    else
+                    {
+                        b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+                    }     
+                }
+                return b;
+            })(window.location.search.substr(1).split('&'));
+             
+            VALOR  = qs["id"];
+            
+            
+            /*
+            botones = '<a href="venta.html?id=' + VALOR + '">VENTA</a><a href="alquiler.html?id=' + VALOR + '">ALQUILER</a>'
+            $('#tipo_negociacion').append(botones);
+*/
+
+
+            $(window).load(function() 
+            {
+                $("#preloader").delay(100).fadeOut("slow");              
+            });
+
+            $( document ).ready(function() 
+            {
+                
+                call_Ajax_Jsonp(URL, METODO, VALOR, LOADER, ERROR, function(data) 
+                {   
+                    DATA                        = data;
+                    
+                    INFORMACION_INMUEBLE        = DATA.INFORMACION_INMUEBLE[0];
+                    NOMBRE                      = DATA.INFORMACION_INMUEBLE[0].NOMBRE.toUpperCase(); 
+                    CONSTRUCTOR                 = DATA.INFORMACION_INMUEBLE[0].CONSTRUCTOR.toUpperCase(); 
+                    NUM_UNIDADES                = DATA.INFORMACION_INMUEBLE[0].NUM_UNIDADES;
+                    FECHA_CONSTRUCCION          = DATA.INFORMACION_INMUEBLE[0].FECHA_CONSTRUCCION;
+                    ALTURA                      = DATA.INFORMACION_INMUEBLE[0].ALTURA;
+                    PISOS                       = DATA.INFORMACION_INMUEBLE[0].PISOS;
+                    NUM_ELEVADORES              = DATA.INFORMACION_INMUEBLE[0].NUM_ELEVADORES;
+                    LATITUD                     = DATA.INFORMACION_INMUEBLE[0].LATITUD;
+                    LONGITUD                    = DATA.INFORMACION_INMUEBLE[0].LONGITUD;
+                    
+                    IMAGENES_INMUEBLE           = DATA.IMAGENES_INMUEBLE;
+                    CARACTERISTICAS_INMUEBLE    = DATA.CARACTERISTICAS_INMUEBLE;
+                    ALREDEDORES_INMUEBLE        = DATA.ALREDEDORES_INMUEBLE;
+                    
+                    
+                    $('#detail').append('<dt class="status">Constructora:</dt><dd><span>'+ CONSTRUCTOR +'</span></dd>'); 
+                    $('#detail').append('<dt class="status">Unidades:</dt><dd><span>'+ NUM_UNIDADES +'</span></dd>');
+                    $('#detail').append('<dt class="status">Año:</dt><dd><span>'+ FECHA_CONSTRUCCION +'</span></dd>');
+                    $('#detail').append('<dt class="status">Altura:</dt><dd><span>'+ ALTURA +' Metros</span></dd>');
+                    $('#detail').append('<dt class="status">Pisos:</dt><dd><span>'+ PISOS +'</span></dd>');
+                    $('#detail').append('<dt class="status">Elevadores:</dt><dd><span>'+ NUM_ELEVADORES +'</span></dd>');
+
+                    $.each(IMAGENES_INMUEBLE, function(index)
+                    {
+                        if (index === 0)
+                        {
+                            imagen =     
+                            '<div class="item active" style="height: 320px;">' +
+                                '<a class="swipebox" href=' + RUTA_IMAGEN + IMAGENES_INMUEBLE[index].COD_INMUEBLE + '/galeria/' + IMAGENES_INMUEBLE[index].NOMBRE + '>' +
+                                    '<img  style="width: auto; height: 320px;" src=' + RUTA_IMAGEN + IMAGENES_INMUEBLE[index].COD_INMUEBLE + '/galeria/' + IMAGENES_INMUEBLE[index].NOMBRE + ' alt="First slide" class="center-block">' +
+                                    '<div class="container">' +
+                                        '<div class="carousel-caption">' +
+                                            '<h1>'+ NOMBRE +'</h1>' +
+                                            '<img class="image-header" src=' + RUTA_IMAGEN + IMAGENES_INMUEBLE[index].COD_INMUEBLE + '/inmueble_list_img.gif alt="">' +
+                                            '<p></p>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</a>' +
+                            '</div>';
+                            $('#carousel-images').append(imagen);
+                            $('#carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="'+ index +'" class="active"></li>'); 
+                        }
+                        else
+                        {
+                            imagen =     
+                            '<div class="item" style="height: 320px;">' +
+                                '<a class="swipebox" href=' + RUTA_IMAGEN + IMAGENES_INMUEBLE[index].COD_INMUEBLE + '/galeria/' + IMAGENES_INMUEBLE[index].NOMBRE + '>' +
+                                    '<img  style="width: auto; height: 320px;" src=' + RUTA_IMAGEN + IMAGENES_INMUEBLE[index].COD_INMUEBLE + '/galeria/' + IMAGENES_INMUEBLE[index].NOMBRE + ' alt="First slide" class="center-block">' +
+                                    '<div class="container">' +
+                                        '<div class="carousel-caption">' +
+                                            '<h1>AQUALINA</h1>' +
+                                            '<img class="image-header" src=' + RUTA_IMAGEN + IMAGENES_INMUEBLE[index].COD_INMUEBLE + '/inmueble_list_img.gif alt="">' +
+                                            '<p></p>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</a>' +
+                            '</div>';
+                            $('#carousel-images').append(imagen);
+                            $('#carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="'+ index +'"></li>');
+                        }
+                    });
+
+                    $.each(CARACTERISTICAS_INMUEBLE, function(index)
+                    {
+                        caracteristica = '<div class="content-icon col-lg-3 col-md-3 col-sm-4 col-xs-12"><a href="#" style="text-align:left;"><i class="fa fa-check"></i> ' + CARACTERISTICAS_INMUEBLE[index].CARACTERISTICA + '</a></div>';             
+                        $('#caracteristicas').append(caracteristica);
+                    });
+
+                    $.each(ALREDEDORES_INMUEBLE, function(index)
+                    {
+                        alrededor = '<div class="content-icon col-lg-3 col-md-3 col-sm-4 col-xs-12"><a href="#" style="text-align:left;"><i class="fa fa-check"></i> ' + ALREDEDORES_INMUEBLE[index].NOMBRE + '</a></div>';             
+                        $('#alrededores').append(alrededor);
+                    });
+                    
+                    mapa = '<iframe class="responsive-image maps" frameborder="0" style="padding:10px; border:0 display:block!important;Width:100%;height:230px;Overflow:hidden;"  src="https://www.google.com/maps/embed/v1/place?q=' + LATITUD + '%2C' + LONGITUD + '&key=AIzaSyCF1c2rck-zoI5GXGEdJ9BuD9GqJzeWFmM"></iframe>';
+                    $('#mapa').append(mapa);
+                    
+                });
+
+                $( ".swipebox" ).swipebox( 
+                {
+                    useCSS                  : true, 
+                    useSVG                  : true, 
+                    initialIndexOnArray     : 0, 
+                    hideCloseButtonOnMobile : false, 
+                    removeBarsOnMobile      : true, 
+                    hideBarsDelay           : 30000, 
+                    loopAtEnd               : true 
+                }); 
+
+            });
+        </script>
+    </body>
+</html>

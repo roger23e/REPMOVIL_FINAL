@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>::.APARTRACK.::</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <link href="css/custom.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body style="background-color:#f2f2f2; text-align:center;">
+        <div id="preloader">
+            <div id="status">
+                <div class="preloader-logo"></div>
+                <h3></h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div id="main">
+                <div class="row" style="display: block;">
+                    <div id="error-notificacion" class="static-notification bg-red-dark tap-dismiss" style="display: none;">
+                        <p id="error" style="text-transform: uppercase; font-size: 8px;">
+                        </p>
+                    </div>
+                    <div id="ubicacion-notificacion" class="static-notification bg-green-dark tap-dismiss" style="display: none;">
+                        <p id="ubicacion" style="text-transform: uppercase; font-size: 8px;">
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!--div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Warning!</strong> Better check yourself, you're not looking too good.
+            </div>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Warning!</strong> Better check yourself, you're not looking too good.
+            </div-->
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="background-color: #d5f0f6;height: 40px; line-height: 40px;">
+                    <a style="width: 25%" class="fa fa-refresh fa-lg" href="#" role="button"></a>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="background-color: #d5f0f6;height: 40px; line-height: 40px;">
+                    <a style="width: 25%" class="fa fa-building fa-lg" href="#" role="button"></a>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="background-color: #d5f0f6;height: 40px; line-height: 40px;">
+                    <a style="width: 25%" class="fa fa-building-o fa-lg" href="#" role="button"></a>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="background-color: #d5f0f6;height: 40px; line-height: 40px;">
+                    <a style="width: 25%" class="fa fa-street-view fa-lg" href="#" role="button"></a>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row" id="inmuebles">
+            </div>
+        </div>
+        <script src="js/jquery-2.2.3.js" type="text/javascript"></script>
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/jquery.lazyload-any.min.js" type="text/javascript"></script>
+        <script src="js/configuracion.js" type="text/javascript" ></script>
+        <script>
+
+
+            function onSuccess(position)
+            {
+                LATITUD_INMUEBLE = position.coords.latitude;
+                LONGITUD_INMUEBLE = position.coords.longitude;
+
+                $("#ubicacion").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'Latitud:  ' + position.coords.latitude + '  Longitud: ' + position.coords.longitude);
+                $("#error-notificacion").css("display", "none");
+                $("#ubicacion-notificacion").css("display", "block");
+
+                if (typeof (Storage) !== "undefined")
+                {
+                    localStorage.setItem("LATITUD_INMUEBLE", LATITUD_INMUEBLE);
+                    localStorage.setItem("LONGITUD_INMUEBLE", LONGITUD_INMUEBLE);
+                } else
+                {
+                    $("#error").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'Su didpositivo no admite el almacenamiento de su ubicacion.' + '<i class="fa fa-refresh" aria-hidden="true"></i>');
+                    $("#error-notificacion").css("display", "block");
+                    $("#ubicacion-notificacion").css("display", "none");
+                }
+
+                $("#inmuebles").empty();
+                METODO = "LEER_INMUEBLES_ORDENADOS";
+                VALOR = (LATITUD_INMUEBLE + "|" + LONGITUD_INMUEBLE);
+
+                call_Ajax_Jsonp(URL, METODO, VALOR, LOADER, ERROR, function (data)
+                {
+
+                    $.each(data.INMUEBLES, function (index)
+                    {
+
+                        DISTANCIA = data.INMUEBLES[index].DISTANCIA;
+
+                        if (DISTANCIA < 1)
+                        {
+                            DISTANCIA = (DISTANCIA * 1000);
+                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
+                        } else {
+                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
+
+                        }
+
+                        inmuebles =
+                            '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
+                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
+                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
+                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
+                            '<img class="img-list" alt="" src="' + RUTA_IMAGEN +  data.INMUEBLES[index].COD_INMUEBLE + '/inmueble_list_img.gif">' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
+                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
+                            '<p class="titulo" >' + (data.INMUEBLES[index].NOMBRE).toUpperCase() +
+                            '<br>' +
+                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                            '<br>' +
+                            '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
+                            '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>' +
+                            '</p>' +
+                            '</div>' +
+                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3">' +
+                            '<p style="text-align:center; line-height:20px; font-size:9px;font-weight: bold;">' +
+                            '<i class="fa fa-smile-o fa-lg" aria-hidden="true"></i> 80/100' +
+                            '</p>' +
+                            '</div>' +
+                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3" style="border-right: 2px solid #b3b3b3;">' +
+                            '<p class="costo" >' +
+                            'Costo $1000' +
+                            '</p>' +
+                            '</div> ' +
+                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
+                            '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
+                            'XXXXXX' +
+                            '</p>' +
+                            '</div>' +
+                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 2px solid #b3b3b3;">' +
+                            '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=' + data.INMUEBLES[index].COD_INMUEBLE + '>VER OFERTA</button>' +
+                            '</div> ' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                        /*
+                         inmuebles = 
+                         '<article class="box">' + 
+                         '<figure class="col-lg-3 col-md-3 col-sm-3 col-xs-3">' + 
+                         '<img width="100" height="100" alt="" src="' + RUTA_IMAGEN +  data.INMUEBLES[index].COD_INMUEBLE + '/inmueble_list_img.gif">' + 
+                         '</figure>' +   
+                         '<div class="details col-lg-9 col-md-9  col-sm-9  col-xs-9 ">' + 
+                         '<div>' + 
+                         '<div>' + 
+                         '<h4 class="box-title" style="font-size: 10px; font-weight: bold">' + (data.INMUEBLES[index].NOMBRE).toUpperCase() + '<small style="font-size: 8px; font-weight: bold"><i></i>Distancia: ' + DISTANCIA + '</small></h4>' + 
+                         '</div>' + 
+                         '<div>' + 
+                         '<span class="price" style="font-size: 10px; font-weight: bold"><small>Distancia: </small>1000 km</span>' + 
+                         '<a onClick="divFunction($(this))" id=' + data.INMUEBLES[index].COD_INMUEBLE + ' class="inmueble button btn-small full-width text-center" title="">VER</a>' + 
+                         '</div>' + 
+                         '</div>' + 
+                         '</div>' + 
+                         '</article>';*/
+                        $('#inmuebles').append(inmuebles);
+                    });
+                });
+
+                $("#preloader").delay(6000).fadeOut("slow");
+            };
+
+            function onError(error)
+            {
+                if (error.code === 1)
+                {
+                    $("#error").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'No se pudo acceder a su ubicacion.');
+                    $("#error-notificacion").css("display", "block");
+                    $("#ubicacion-notificacion").css("display", "none");
+                } else if (error.code === 2)
+                {
+                    $("#error").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'No se pudo acceder a su ubicacion.');
+                    $("#error-notificacion").css("display", "block");
+                    $("#ubicacion-notificacion").css("display", "none");
+                } else if (error.code === 3)
+                {
+                    $("#error").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'No se pudo acceder a su ubicacion.');
+                    $("#error-notificacion").css("display", "block");
+                    $("#ubicacion-notificacion").css("display", "none");
+                } else
+                {
+                    $("#error").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'No se pudo acceder a su ubicacion.');
+                    $("#error-notificacion").css("display", "block");
+                    $("#ubicacion-notificacion").css("display", "none");
+                }
+
+                $("#inmuebles").empty();
+                METODO = "LEER_INMUEBLES_SIN_ORDENAR";
+
+                call_Ajax_Jsonp(URL, METODO, VALOR, LOADER, ERROR, function (data)
+                {
+                    $.each(data.INMUEBLES, function (index)
+                    {
+                        /*
+                         inmuebles = 
+                         '<article class="box">' + 
+                         '<figure class="col-lg-3 col-md-3 col-sm-3 col-xs-3">' + 
+                         '<img width="100" height="100" alt="" src="' + RUTA_IMAGEN +  data.INMUEBLES[index].COD_INMUEBLE + '/inmueble_list_img.gif">' + 
+                         '</figure>' + 
+                         '<div class="details col-lg-9 col-md-9  col-sm-9  col-xs-9 ">' + 
+                         '<div>' + 
+                         '<div>' + 
+                         '<h4 class="box-title" style="font-size: 10px; font-weight: bold">' + (data.INMUEBLES[index].NOMBRE).toUpperCase() + '<small style="font-size: 8px; font-weight: bold"><i></i></small></h4>' + 
+                         '</div>' + 
+                         '<div>' + 
+                         '<span class="price" style="font-size: 10px; font-weight: bold"><small>Distancia: </small>1000 km</span>' + 
+                         '<a onClick="divFunction($(this))" id=' + data.INMUEBLES[index].COD_INMUEBLE + ' class="inmueble button btn-small full-width text-center" title="">VER</a>' + 
+                         '</div>' + 
+                         '</div>' + 
+                         '</div>' + 
+                         '</article>';
+                         */
+                        inmuebles =
+                                '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
+                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
+                                '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
+                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
+                                '<img src="images/1.gif" alt="" class="img-list">' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
+                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
+                                '<p class="titulo" >' +
+                                'TRUMP TOWER PANAMA' +
+                                '<br>' +
+                                '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                '<br>' +
+                                '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
+                                '<span style="font-size:10px;"> 0.1 km de tu ubicacion</span>' +
+                                '</p>' +
+                                '</div>' +
+                                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3">' +
+                                '<p style="text-align:center; line-height:20px; font-size:9px;font-weight: bold;">' +
+                                '<i class="fa fa-smile-o fa-lg" aria-hidden="true"></i> 80/100' +
+                                '</p>' +
+                                '</div>' +
+                                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3" style="border-right: 2px solid #b3b3b3;">' +
+                                '<p class="costo" >' +
+                                'Costo $1000' +
+                                '</p>' +
+                                '</div> ' +
+                                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
+                                '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
+                                'XXXXXX' +
+                                '</p>' +
+                                '</div>' +
+                                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 2px solid #b3b3b3;">' +
+                                '<button type="button" class="btn btn-primary boton">VER OFERTA</button>' +
+                                '</div> ' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
+
+
+
+
+                        $('#inmuebles').append(inmuebles);
+                        });
+                });
+
+                $("#preloader").delay(6000).fadeOut("slow");
+            };
+
+            function divFunction(e)
+            {
+                $(location).attr("href", "inmueble.html?id=" + e.attr("id"));
+            }
+            ;
+
+            var options =
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 3000
+                    };
+
+            function success(pos)
+            {
+                var crd = pos.coords;
+
+                console.log('Your current position is:');
+                console.log('Latitude : ' + crd.latitude);
+                console.log('Longitude: ' + crd.longitude);
+                console.log('More or less ' + crd.accuracy + ' meters.');
+            }
+            ;
+
+            function error(err)
+            {
+                console.warn('ERROR(' + err.code + '): ' + err.message);
+            }
+            ;
+
+            $(document).ready(function ()
+            {
+                navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+
+                $('.tap-dismiss').click(function ()
+                {
+                    $(this).slideUp(600);
+                    return false;
+                });
+
+            });
+
+        </script>
+    </body>
+</html>
