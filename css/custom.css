@@ -31,6 +31,10 @@
 ====================================== */
 @import url(shortcode.css);
 
+/* 1.3.0 SWIPEBOX
+====================================== */
+@import url(swipebox.min.css);
+
 /* 1.0 CAROUSEL
 ====================================== */
 @import url(carousel.css);

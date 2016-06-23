@@ -9,10 +9,6 @@
         
         <title>APARTRACK</title>
         
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/swipebox.min.css" rel="stylesheet" type="text/css"/>
-        <link href="css/carousel.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
         <link href="css/custom.css" rel="stylesheet" type="text/css"/>
         <style>
             .image-header
@@ -41,7 +37,13 @@
             
         </style>
     </head>
-    <body style="background-color:#f2f2f2; text-align:center;">       
+    <body style="background-color:#f2f2f2; text-align:center;"> 
+        <div id="preloader">
+            <div id="status">
+                <div class="preloader-logo"></div>
+                <h3></h3>
+            </div>
+        </div>
         <div id="myCarousel" class="carousel slide container-fluid" data-ride="carousel" style="height: 320px;">
             <ol class="carousel-indicators" id="carousel-indicators">
             </ol>
@@ -161,16 +163,9 @@
             VALOR  = qs["id"];
             
             
-            /*
-            botones = '<a href="venta.html?id=' + VALOR + '">VENTA</a><a href="alquiler.html?id=' + VALOR + '">ALQUILER</a>'
-            $('#tipo_negociacion').append(botones);
-*/
 
 
-            $(window).load(function() 
-            {
-                $("#preloader").delay(100).fadeOut("slow");              
-            });
+ 
 
             $( document ).ready(function() 
             {
@@ -195,12 +190,12 @@
                     ALREDEDORES_INMUEBLE        = DATA.ALREDEDORES_INMUEBLE;
                     
                     
-                    $('#detail').append('<dt class="status">Constructora:</dt><dd><span>'+ CONSTRUCTOR +'</span></dd>'); 
-                    $('#detail').append('<dt class="status">Unidades:</dt><dd><span>'+ NUM_UNIDADES +'</span></dd>');
-                    $('#detail').append('<dt class="status">Año:</dt><dd><span>'+ FECHA_CONSTRUCCION +'</span></dd>');
-                    $('#detail').append('<dt class="status">Altura:</dt><dd><span>'+ ALTURA +' Metros</span></dd>');
-                    $('#detail').append('<dt class="status">Pisos:</dt><dd><span>'+ PISOS +'</span></dd>');
-                    $('#detail').append('<dt class="status">Elevadores:</dt><dd><span>'+ NUM_ELEVADORES +'</span></dd>');
+                    $('#detail').append('<dt class="status" style="text-align:left;">Constructora:</dt><dd><span>'+ CONSTRUCTOR +'</span></dd>'); 
+                    $('#detail').append('<dt class="status" style="text-align:left;">Unidades:</dt><dd><span>'+ NUM_UNIDADES +'</span></dd>');
+                    $('#detail').append('<dt class="status" style="text-align:left;">Año:</dt><dd><span>'+ FECHA_CONSTRUCCION +'</span></dd>');
+                    $('#detail').append('<dt class="status" style="text-align:left;">Altura:</dt><dd><span>'+ ALTURA +' Metros</span></dd>');
+                    $('#detail').append('<dt class="status" style="text-align:left;">Pisos:</dt><dd><span>'+ PISOS +'</span></dd>');
+                    $('#detail').append('<dt class="status" style="text-align:left;">Elevadores:</dt><dd><span>'+ NUM_ELEVADORES +'</span></dd>');
 
                     $.each(IMAGENES_INMUEBLE, function(index)
                     {
@@ -256,6 +251,8 @@
                     
                     mapa = '<iframe class="responsive-image maps" frameborder="0" style="padding:10px; border:0 display:block!important;Width:100%;height:230px;Overflow:hidden;"  src="https://www.google.com/maps/embed/v1/place?q=' + LATITUD + '%2C' + LONGITUD + '&key=AIzaSyCF1c2rck-zoI5GXGEdJ9BuD9GqJzeWFmM"></iframe>';
                     $('#mapa').append(mapa);
+                    
+                    $("#preloader").delay(100).fadeOut("slow");
                     
                 });
 
