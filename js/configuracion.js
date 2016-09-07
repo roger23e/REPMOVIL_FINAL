@@ -6,7 +6,8 @@ var LOADER                  = null;
 var ERROR                   = null;
 var DATA                    = null;
 
-var URL                     = "http://apartrack.com/REPMOVIL/common/ws_movil.php?format=json";
+//var URL                     = "http://apartrack.com/REPMOVIL/common/ws_movil.php?format=json";
+var URL                     = "http://localhost/repmovil5/public_html/common/ws_movil.php?format=json";
 var RUTA                    = "/REPMOVIL/";
 var RUTA_IMAGEN             = "http://apartrack.com/REP/modulos/inmuebles/imagenes/"; 
 var RUTA_IMAGEN_APARTAMENTO = "http://apartrack.com/REP/modulos/apartamentos/imagenes/"; 

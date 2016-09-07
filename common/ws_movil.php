@@ -59,7 +59,8 @@
                 NOMBRE, 
                 DESCRIPCION,
                 LATITUD, 
-                LONGITUD, 
+                LONGITUD,
+                NUMERO_APARTAMENTOS,
                 (
                     6371 * ACOS
                     ( 
@@ -84,12 +85,13 @@
         { 
             $inmuebles[] = array
             (
-                'COD_INMUEBLE'  => $row['COD_INMUEBLE'],
-                'NOMBRE'        => $row['NOMBRE'],
-                'DESCRIPCION'   => $row['DESCRIPCION'], 
-                'LATITUD'       => $row['LATITUD'], 
-                'LONGITUD'      => $row['LONGITUD'], 
-                'DISTANCIA'     => $row['DISTANCIA']
+                'COD_INMUEBLE'          => $row['COD_INMUEBLE'],
+                'NOMBRE'                => $row['NOMBRE'],
+                'DESCRIPCION'           => $row['DESCRIPCION'], 
+                'LATITUD'               => $row['LATITUD'], 
+                'LONGITUD'              => $row['LONGITUD'], 
+                'DISTANCIA'             => $row['DISTANCIA'],
+                'NUMERO_APARTAMENTOS'   => $row['NUMERO_APARTAMENTOS']
             );
         }
 
@@ -106,9 +108,8 @@
 
     }
     
-        if ($m == "LEER_INMUEBLES_SIN_ORDENAR")
+    if ($m == "LEER_INMUEBLES_SIN_ORDENAR")
     {
-        //$v          = filter_input(INPUT_GET,'v', FILTER_SANITIZE_STRING);
         $inmuebles  = array();
         $retorno    = array();
         $lat        = 10.470220;
@@ -158,7 +159,8 @@
                 NOMBRE, 
                 DESCRIPCION,
                 LATITUD, 
-                LONGITUD
+                LONGITUD,
+                NUMERO_APARTAMENTOS
             FROM 
                 tbl_inmuebles;';
 
@@ -168,11 +170,13 @@
         { 
             $inmuebles[] = array
             (
-                'COD_INMUEBLE'  => $row['COD_INMUEBLE'],
-                'NOMBRE'        => $row['NOMBRE'],
-                'DESCRIPCION'   => $row['DESCRIPCION'], 
-                'LATITUD'       => $row['LATITUD'], 
-                'LONGITUD'      => $row['LONGITUD']
+                'COD_INMUEBLE'          => $row['COD_INMUEBLE'],
+                'NOMBRE'                => $row['NOMBRE'],
+                'DESCRIPCION'           => $row['DESCRIPCION'], 
+                'LATITUD'               => $row['LATITUD'], 
+                'LONGITUD'              => $row['LONGITUD'],
+                'NUMERO_APARTAMENTOS'   => $row['NUMERO_APARTAMENTOS']
+                    
             );
         }
 

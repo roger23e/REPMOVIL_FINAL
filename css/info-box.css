@@ -285,16 +285,22 @@
   font-weight: 400 !important;
   padding-left: 36px;
 }
-.box-ads .detail dt.status {
+.box-ads .detail dt.constructora {
+  background-position: left -7px;
+}
+.box-ads .detail dt.unidades {
   background-position: left -35px;
 }
-.box-ads .detail dt.area {
+.box-ads .detail dt.anio {
   background-position: left -69px;
 }
-.box-ads .detail dt.bed {
+.box-ads .detail dt.altura {
+  background-position: left -102px;
+}
+.box-ads .detail dt.pisos {
   background-position: left -134px;
 }
-.box-ads .detail dt.bath {
+.box-ads .detail dt.elevadores {
   background-position: left -164px;
 }
 .box-ads .detail dd {
@@ -642,16 +648,22 @@
   float: left;
   padding-left: 36px;
 }
-.box-property-slide .left-block .detail dt.status {
+.box-property-slide .left-block .detail dt.constructora {
+  background-position: left -7px;
+}
+.box-property-slide .left-block .detail dt.unidades {
   background-position: left -34px;
 }
-.box-property-slide .left-block .detail dt.area {
+.box-property-slide .left-block .detail dt.anio {
   background-position: left -68px;
 }
-.box-property-slide .left-block .detail dt.bed {
+.box-property-slide .left-block .detail dt.altura {
+  background-position: left -102px;
+}
+.box-property-slide .left-block .detail dt.pisos {
   background-position: left -133px;
 }
-.box-property-slide .left-block .detail dt.bath {
+.box-property-slide .left-block .detail dt.elevadores {
   background-position: left -163px;
 }
 .box-property-slide .left-block .detail dd {
