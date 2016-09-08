@@ -71,6 +71,39 @@
             var POSICION            = null;
             var LATITUD             = null;
             var LONGITUD            = null;
+            var CALCULAR_DISTANCIA  = null;
+            var INMUEBLE            =   '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
+                                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
+                                                '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
+                                                    '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
+                                                        '<img class="img-list img-responsive" alt="" src="$IMAGEN/inmueble_list_img.gif">' +
+                                                    '</div>' +
+                                                '</div>' +
+                                                '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
+                                                    '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
+                                                        '<p class="titulo" >$NOMBRE' +
+                                                            '<br>' +
+                                                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                                            '<i class="fa fa-star" aria-hidden="true"></i>' +
+                                                            '<br>' +
+                                                            '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
+                                                            '$UBICACION' +
+                                                        '</p>' +
+                                                    '</div>' +
+                                                    '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
+                                                        '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
+                                                            'Disponibles: $NUMERO_APARTAMENTOS' + 
+                                                        '</p>' +
+                                                    '</div>' +
+                                                    '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 0.5px solid #b3b3b3;">' +
+                                                        '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=$LINK>VER</button>' +
+                                                    '</div> ' +
+                                                '</div>' +
+                                             '</div>' +
+                                        '</div>';
             
             
             function get_coords(callback) 
@@ -189,17 +222,14 @@
                 {
                     if (callback[0] === "coords")
                     {
-                        POSICION    = [callback[1],callback[2]];
-                        LATITUD     = callback[1];
-                        LONGITUD    = callback[2];
+                        POSICION            = [callback[1],callback[2]];
+                        LATITUD             = callback[1];
+                        LONGITUD            = callback[2];
+                        CALCULAR_DISTANCIA  = true;
                         
                         $("#ubicacion").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'Latitud:  ' + LATITUD + '  Longitud: ' + LONGITUD);
                         $("#error-notificacion").css("display", "none");
                         $("#ubicacion-notificacion").css("display", "block");
-                        
-                        alert("callback");
-                        
-
                         $("#inmuebles").empty();
                         METODO = "LEER_INMUEBLES_ORDENADOS";
                         VALOR = (LATITUD + "|" + LONGITUD);
@@ -207,96 +237,98 @@
                         call_Ajax_Jsonp(URL, METODO, VALOR, LOADER, ERROR, function (data)
                         {
                             DATA = data.INMUEBLES;
-                            console.log(DATA);
                             $.each(DATA, function (index)
                             {
-                                //console.log(DATA[index]);
-                                inmuebles = "<div>" + DATA[index].NOMBRE +  "</div>" ;
-                                /*
-                                DISTANCIA = data.INMUEBLES[index].DISTANCIA;
+                                DISTANCIA = DATA[index].DISTANCIA;
 
                                 if (DISTANCIA < 1)
                                 {
                                     DISTANCIA = (DISTANCIA * 1000);
                                     DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
-                                } else 
+                                } 
+                                else 
                                 {
                                     DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
                                 }
+                                
+                                IMAGEN              = RUTA_IMAGEN + DATA[index].COD_INMUEBLE;
+                                NOMBRE              = DATA[index].NOMBRE.toUpperCase(); 
+                                UBICACION           = '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>';
+                                NUMERO_APARTAMENTOS = DATA[index].NUMERO_APARTAMENTOS;
+                                LINK                = DATA[index].COD_INMUEBLE;
+                                INMUEBLE_LIST       = INMUEBLE;
+                                
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$IMAGEN', IMAGEN);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$NOMBRE', NOMBRE);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$UBICACION', UBICACION);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$NUMERO_APARTAMENTOS', NUMERO_APARTAMENTOS);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$LINK', LINK);
 
-                                inmuebles =
-                                    '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
-                                        '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
-                                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
-                                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
-                                                    '<img class="img-list" alt="" src="' + RUTA_IMAGEN +  data.INMUEBLES[index].COD_INMUEBLE + '/inmueble_list_img.gif">' +
-                                                '</div>' +
-                                            '</div>' +
-                                            '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
-                                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
-                                                    '<p class="titulo" >' + (data.INMUEBLES[index].NOMBRE).toUpperCase() +
-                                                        '<br>' +
-                                                        '<i class="fa fa-star" aria-hidden="true"></i>' +
-                                                        '<i class="fa fa-star" aria-hidden="true"></i>' +
-                                                        '<i class="fa fa-star" aria-hidden="true"></i>' +
-                                                        '<i class="fa fa-star" aria-hidden="true"></i>' +
-                                                        '<i class="fa fa-star" aria-hidden="true"></i>' +
-                                                        '<br>' +
-                                                        '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
-                                                        '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>' +
-                                                    '</p>' +
-                                                '</div>' +
-                                                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
-                                                    '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
-                                                        'Disponibles: ' + data.INMUEBLES[index].NUMERO_APARTAMENTOS + 
-                                                    '</p>' +
-                                                '</div>' +
-                                                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 0.5px solid #b3b3b3;">' +
-                                                    '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=' + data.INMUEBLES[index].COD_INMUEBLE + '>VER</button>' +
-                                                '</div> ' +
-                                            '</div>' +
-                                         '</div>' +
-                                    '</div>';*/
-                                $('#inmuebles').append(inmuebles);
+                                $('#inmuebles').append(INMUEBLE_LIST); 
+                                
                             });
-                            $("#preloader").delay(60).fadeOut("slow", function(){});
+                            $("#preloader").delay(60).fadeOut("slow");
+                        });
+                    }
+                    else 
+                    {
+                        LATITUD             = "10.4673007";
+                        LONGITUD            = "-66.5878883";
+                        CALCULAR_DISTANCIA  = false;
+
+                        
+                        $("#error").append('<i class="fa fa-times" style="padding-top: 9px;"></i>' + 'No se pudo acceder a su ubicacion.');
+                        $("#error-notificacion").css("display", "block");
+                        $("#ubicacion-notificacion").css("display", "none");
+                        
+                        $("#inmuebles").empty();
+                        METODO = "LEER_INMUEBLES_ORDENADOS";
+                        VALOR = (LATITUD + "|" + LONGITUD);
+
+                        call_Ajax_Jsonp(URL, METODO, VALOR, LOADER, ERROR, function (data)
+                        {
+                            DATA = data.INMUEBLES;
+                            $.each(DATA, function (index)
+                            {                                
+                                IMAGEN              = RUTA_IMAGEN + DATA[index].COD_INMUEBLE;
+                                NOMBRE              = DATA[index].NOMBRE.toUpperCase(); 
+                                UBICACION           = '<span style="font-size:10px;"> Distancia no disponible</span>';
+                                NUMERO_APARTAMENTOS = DATA[index].NUMERO_APARTAMENTOS;
+                                LINK                = DATA[index].COD_INMUEBLE;
+                                INMUEBLE_LIST       = INMUEBLE;
+                                console.log(UBICACION);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$IMAGEN', IMAGEN);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$NOMBRE', NOMBRE);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$UBICACION', UBICACION);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$NUMERO_APARTAMENTOS', NUMERO_APARTAMENTOS);
+                                INMUEBLE_LIST = INMUEBLE_LIST.replace('$LINK', LINK);
+
+                                $('#inmuebles').append(INMUEBLE_LIST); 
+                                $('#iconOrdenarNumericAsc').css("display", "none");
+                                $('#iconOrdenarNumericDesc').css("display", "none");
+                                
+                            });
+                            
+                            //$( "#iconOrdenarAsc" ).trigger( "click" );
+                            $("#preloader").delay(60).fadeOut("slow");
+                            
                         });
                         
-
-
-                        
-
                     }
+                    /*
                     else if(callback[0] === "position_unavailable")
                     {
-
                     }
                     else if(callback[0] === "timeout")
                     {
-
                     }
                     else if(callback[0] === "geoloc_deactivated")
                     {
-   
                     }
                     else if(callback[0] === "geoloc_not_supported")
                     {
-
-                    }
+                    }*/
                 });
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                ///navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 
                 $('.tap-dismiss').click(function ()
                 {
@@ -319,330 +351,231 @@
                 });
                 
                 $('#buttonBuscar').click(function ()
-                {     
-                    MATCH = $('#buscarInmueble').val();                    
-                    DATASEARCH = DATA.filter( function (INMUEBLES){return INMUEBLES.NOMBRE.toUpperCase().match(MATCH.toUpperCase());});
-                    $('#inmuebles').empty();
-                    $.each(DATASEARCH, function (index)
+                {
+                    $("#preloader").delay(60).fadeIn("slow", function()
                     {
-                        DISTANCIA = DATASEARCH[index].DISTANCIA;
-                        if (DISTANCIA < 1)
+                        MATCH = $('#buscarInmueble').val();                    
+                        DATASEARCH = DATA.filter( function (INMUEBLES){return INMUEBLES.NOMBRE.toUpperCase().match(MATCH.toUpperCase());});
+                        $('#inmuebles').empty();
+                        $.each(DATASEARCH, function (index)
                         {
-                            DISTANCIA = (DISTANCIA * 1000);
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
-                        } 
-                        else 
-                        {
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
-                        }
+                            DISTANCIA = DATASEARCH[index].DISTANCIA;
 
-                        inmuebles =
-                            '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
-                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
-                            '<img class="img-list" alt="" src="' + RUTA_IMAGEN +  DATASEARCH[index].COD_INMUEBLE + '/inmueble_list_img.gif">' +
-                            '</div>' +
-                            '</div>' +
-                            '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
-                            '<p class="titulo" >' + (DATASEARCH[index].NOMBRE).toUpperCase() +
-                            '<br>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<br>' +
-                            '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
-                            '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3">' +
-                            '<p style="text-align:center; line-height:20px; font-size:9px;font-weight: bold;">' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3" style="border-right: 1px solid #b3b3b3;">' +
-                            '<p class="costo" >' +
-                            '</p>' +
-                            '</div> ' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
-                            '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
-                            'Disponibles: ' + DATASEARCH[index].NUMERO_APARTAMENTOS + 
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 0.5px solid #b3b3b3;">' +
-                            '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=' + DATASEARCH[index].COD_INMUEBLE + '>VER</button>' +
-                            '</div> ' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>';
-                        $('#inmuebles').append(inmuebles);
-                        $("#divBuscar").css("display", "none");
+                            if (DISTANCIA < 1)
+                            {
+                                DISTANCIA = (DISTANCIA * 1000);
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
+                            } 
+                            else 
+                            {
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
+                            }
+
+                            IMAGEN              = RUTA_IMAGEN + DATASEARCH[index].COD_INMUEBLE;
+                            NOMBRE              = DATASEARCH[index].NOMBRE.toUpperCase(); 
+                            UBICACION           = '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>';
+                            NUMERO_APARTAMENTOS = DATASEARCH[index].NUMERO_APARTAMENTOS;
+                            LINK                = DATASEARCH[index].COD_INMUEBLE;
+                            INMUEBLE_LIST       = INMUEBLE;
+
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$IMAGEN', IMAGEN);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NOMBRE', NOMBRE);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$UBICACION', UBICACION);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NUMERO_APARTAMENTOS', NUMERO_APARTAMENTOS);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$LINK', LINK);
+
+                            $('#inmuebles').append(INMUEBLE_LIST); 
+                            $("#divBuscar").css("display", "none");
+                        });
+                        $("#preloader").delay(600).fadeOut("slow");
                     });
                 });
                 
                 $('#iconOrdenarAsc').click(function ()
                 { 
-                    DATAORDERASC = DATA.sort(SortObjectsByNameAsc);
-                    $('#iconOrdenarAsc').css("display","none");
-                    $('#iconOrdenarDesc').css("display","block");
-                    $('#inmuebles').empty();
-                    
-                    $.each(DATAORDERASC, function (index)
+                    $("#preloader").delay(60).fadeIn("slow", function()
                     {
-                        DISTANCIA = DATAORDERASC[index].DISTANCIA;
-                        if (DISTANCIA < 1)
-                        {
-                            DISTANCIA = (DISTANCIA * 1000);
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
-                        } 
-                        else 
-                        {
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
-                        }
+                        DATAORDERASC = DATA.sort(SortObjectsByNameAsc);
+                        $('#iconOrdenarAsc').css("display","none");
+                        $('#iconOrdenarDesc').css("display","block");
+                        $('#inmuebles').empty();
 
-                        inmuebles =
-                            '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
-                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
-                            '<img class="img-list" alt="" src="' + RUTA_IMAGEN +  DATAORDERASC[index].COD_INMUEBLE + '/inmueble_list_img.gif">' +
-                            '</div>' +
-                            '</div>' +
-                            '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
-                            '<p class="titulo" >' + (DATAORDERASC[index].NOMBRE).toUpperCase() +
-                            '<br>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<br>' +
-                            '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
-                            '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3">' +
-                            '<p style="text-align:center; line-height:20px; font-size:9px;font-weight: bold;">' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3" style="border-right: 1px solid #b3b3b3;">' +
-                            '<p class="costo" >' +
-                            '</p>' +
-                            '</div> ' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
-                            '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
-                            'Disponibles: ' + DATAORDERASC[index].NUMERO_APARTAMENTOS + 
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 0.5px solid #b3b3b3;">' +
-                            '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=' + DATAORDERASC[index].COD_INMUEBLE + '>VER</button>' +
-                            '</div> ' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>';
-                        $('#inmuebles').append(inmuebles);
+                        $.each(DATAORDERASC, function (index)
+                        {
+                            DISTANCIA = DATAORDERASC[index].DISTANCIA;
+
+                            if (DISTANCIA < 1)
+                            {
+                                DISTANCIA = (DISTANCIA * 1000);
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
+                            } 
+                            else 
+                            {
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
+                            }
+
+                            IMAGEN              = RUTA_IMAGEN + DATAORDERASC[index].COD_INMUEBLE;
+                            NOMBRE              = DATAORDERASC[index].NOMBRE.toUpperCase();
+
+                            if (!CALCULAR_DISTANCIA)
+                            {
+                                UBICACION           = '<span style="font-size:10px;"> Distancia no disponible</span>';
+                            }
+                            else
+                            {
+                                UBICACION           = '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>';
+                            }
+
+                            NUMERO_APARTAMENTOS = DATAORDERASC[index].NUMERO_APARTAMENTOS;
+                            LINK                = DATAORDERASC[index].COD_INMUEBLE;
+                            INMUEBLE_LIST       = INMUEBLE;
+
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$IMAGEN', IMAGEN);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NOMBRE', NOMBRE);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$UBICACION', UBICACION);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NUMERO_APARTAMENTOS', NUMERO_APARTAMENTOS);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$LINK', LINK);
+
+                            $('#inmuebles').append(INMUEBLE_LIST); 
+                        });
+                        $("#preloader").delay(600).fadeOut("slow");
                     });
-
                 });
                 
                 $('#iconOrdenarDesc').click(function ()
                 {
-                    DATAORDERDES = DATAORDERASC.reverse();
-                    $('#iconOrdenarAsc').css("display","block");
-                    $('#iconOrdenarDesc').css("display","none");
-                    $('#inmuebles').empty();
-                    $.each(DATAORDERDES, function (index)
+                    $("#preloader").delay(60).fadeIn("slow", function()
                     {
-                        DISTANCIA = DATAORDERDES[index].DISTANCIA;
-                        if (DISTANCIA < 1)
+                        DATAORDERDES = DATAORDERASC.reverse();
+                        $('#iconOrdenarAsc').css("display","block");
+                        $('#iconOrdenarDesc').css("display","none");
+                        $('#inmuebles').empty();
+                        $.each(DATAORDERDES, function (index)
                         {
-                            DISTANCIA = (DISTANCIA * 1000);
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
-                        } 
-                        else 
-                        {
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
-                        }
+                            DISTANCIA = DATAORDERASC[index].DISTANCIA;
 
-                        inmuebles =
-                            '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
-                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
-                            '<img class="img-list" alt="" src="' + RUTA_IMAGEN +  DATAORDERDES[index].COD_INMUEBLE + '/inmueble_list_img.gif">' +
-                            '</div>' +
-                            '</div>' +
-                            '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
-                            '<p class="titulo" >' + (DATAORDERDES[index].NOMBRE).toUpperCase() +
-                            '<br>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<br>' +
-                            '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
-                            '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3">' +
-                            '<p style="text-align:center; line-height:20px; font-size:9px;font-weight: bold;">' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3" style="border-right: 1px solid #b3b3b3;">' +
-                            '<p class="costo" >' +
-                            '</p>' +
-                            '</div> ' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
-                            '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
-                            'Disponibles: ' + DATAORDERDES[index].NUMERO_APARTAMENTOS + 
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 0.5px solid #b3b3b3;">' +
-                            '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=' + DATAORDERDES[index].COD_INMUEBLE + '>VER</button>' +
-                            '</div> ' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>';
-                        $('#inmuebles').append(inmuebles);
+                            if (DISTANCIA < 1)
+                            {
+                                DISTANCIA = (DISTANCIA * 1000);
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
+                            } 
+                            else 
+                            {
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
+                            }
+
+                            IMAGEN              = RUTA_IMAGEN + DATAORDERDES[index].COD_INMUEBLE;
+                            NOMBRE              = DATAORDERDES[index].NOMBRE.toUpperCase(); 
+
+                            if (!CALCULAR_DISTANCIA)
+                            {
+                                UBICACION           = '<span style="font-size:10px;"> Distancia no disponible</span>';
+                            }
+                            else
+                            {
+                                UBICACION           = '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>';
+                            }                        
+
+                            NUMERO_APARTAMENTOS = DATAORDERDES[index].NUMERO_APARTAMENTOS;
+                            LINK                = DATAORDERDES[index].COD_INMUEBLE;
+                            INMUEBLE_LIST       = INMUEBLE;
+
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$IMAGEN', IMAGEN);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NOMBRE', NOMBRE);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$UBICACION', UBICACION);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NUMERO_APARTAMENTOS', NUMERO_APARTAMENTOS);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$LINK', LINK);
+
+                            $('#inmuebles').append(INMUEBLE_LIST); 
+                        });
+                        $("#preloader").delay(600).fadeOut("slow");
                     });
-
                 });          
                 
                 $('#iconOrdenarNumericAsc').click(function ()
                 { 
-                    DATADISTORDERASC = DATA.sort(SortObjectsByDistance);
-                    $('#iconOrdenarNumericAsc').css("display","none");
-                    $('#iconOrdenarNumericDesc').css("display","block");
-                    $('#inmuebles').empty();
-                    
-                    $.each(DATADISTORDERASC, function (index)
+                    $("#preloader").delay(60).fadeIn("slow", function()
                     {
-                        DISTANCIA = DATADISTORDERASC[index].DISTANCIA;
-                        if (DISTANCIA < 1)
-                        {
-                            DISTANCIA = (DISTANCIA * 1000);
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
-                        } 
-                        else 
-                        {
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
-                        }
+                        DATADISTORDERASC = DATA.sort(SortObjectsByDistance);
+                        $('#iconOrdenarNumericAsc').css("display","none");
+                        $('#iconOrdenarNumericDesc').css("display","block");
+                        $('#inmuebles').empty();
 
-                        inmuebles =
-                            '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
-                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
-                            '<img class="img-list" alt="" src="' + RUTA_IMAGEN +  DATADISTORDERASC[index].COD_INMUEBLE + '/inmueble_list_img.gif">' +
-                            '</div>' +
-                            '</div>' +
-                            '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
-                            '<p class="titulo" >' + (DATADISTORDERASC[index].NOMBRE).toUpperCase() +
-                            '<br>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<br>' +
-                            '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
-                            '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>' +
-                            '</p>' +
-                            '</div>' +
-                            //'<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3">' +
-                            //'<p style="text-align:center; line-height:20px; font-size:9px;font-weight: bold;">' +
-                            //'</p>' +
-                            //'</div>' +
-                            //'<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3" style="border-right: 1px solid #b3b3b3;">' +
-                            //'<p class="costo" >' +
-                            //'</p>' +
-                            //'</div> ' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
-                            '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
-                            'Disponibles: ' + DATADISTORDERASC[index].NUMERO_APARTAMENTOS + 
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 0.5px solid #b3b3b3;">' +
-                            '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=' + DATADISTORDERASC[index].COD_INMUEBLE + '>VER</button>' +
-                            '</div> ' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>';
-                        $('#inmuebles').append(inmuebles);
+                        $.each(DATADISTORDERASC, function (index)
+                        {
+                            DISTANCIA = DATADISTORDERASC[index].DISTANCIA;
+
+                            if (DISTANCIA < 1)
+                            {
+                                DISTANCIA = (DISTANCIA * 1000);
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
+                            } 
+                            else 
+                            {
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
+                            }
+
+                            IMAGEN              = RUTA_IMAGEN + DATADISTORDERASC[index].COD_INMUEBLE;
+                            NOMBRE              = DATADISTORDERASC[index].NOMBRE.toUpperCase(); 
+                            UBICACION           = '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>';
+                            NUMERO_APARTAMENTOS = DATADISTORDERASC[index].NUMERO_APARTAMENTOS;
+                            LINK                = DATADISTORDERASC[index].COD_INMUEBLE;
+                            INMUEBLE_LIST       = INMUEBLE;
+
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$IMAGEN', IMAGEN);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NOMBRE', NOMBRE);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$UBICACION', UBICACION);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NUMERO_APARTAMENTOS', NUMERO_APARTAMENTOS);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$LINK', LINK);
+
+                            $('#inmuebles').append(INMUEBLE_LIST); 
+                        });
+                        $("#preloader").delay(600).fadeOut("slow");
+
                     });
-
                 });
                 
                 $('#iconOrdenarNumericDesc').click(function ()
                 {
-                    DATADISTORDERDES = DATADISTORDERASC.reverse();
-                    $('#iconOrdenarNumericAsc').css("display","block");
-                    $('#iconOrdenarNumericDesc').css("display","none");
-                    $('#inmuebles').empty();
-                    $.each(DATADISTORDERDES, function (index)
+                    $("#preloader").delay(60).fadeIn("slow", function()
                     {
-                        DISTANCIA = DATADISTORDERDES[index].DISTANCIA;
-                        if (DISTANCIA < 1)
+                        DATADISTORDERDES = DATADISTORDERASC.reverse();
+                        $('#iconOrdenarNumericAsc').css("display","block");
+                        $('#iconOrdenarNumericDesc').css("display","none");
+                        $('#inmuebles').empty();
+                        $.each(DATADISTORDERDES, function (index)
                         {
-                            DISTANCIA = (DISTANCIA * 1000);
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
-                        } 
-                        else 
-                        {
-                            DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
-                        }
+                            DISTANCIA = DATADISTORDERDES[index].DISTANCIA;
 
-                        inmuebles =
-                            '<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fondo">' +
-                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-0">' +
-                            '<img class="img-list" alt="" src="' + RUTA_IMAGEN +  DATADISTORDERDES[index].COD_INMUEBLE + '/inmueble_list_img.gif">' +
-                            '</div>' +
-                            '</div>' +
-                            '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 centro">' +
-                            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 fila-1">' +
-                            '<p class="titulo" >' + (DATADISTORDERDES[index].NOMBRE).toUpperCase() +
-                            '<br>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<i class="fa fa-star" aria-hidden="true"></i>' +
-                            '<br>' +
-                            '<i class="fa fa-map-marker" aria-hidden="true"></i>' +
-                            '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3">' +
-                            '<p style="text-align:center; line-height:20px; font-size:9px;font-weight: bold;">' +
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-3" style="border-right: 1px solid #b3b3b3;">' +
-                            '<p class="costo" >' +
-                            '</p>' +
-                            '</div> ' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2">' +
-                            '<p style="text-align:center; line-height:40px; font-size:9px;font-weight: bold;">' +
-                            'Disponibles: ' + DATADISTORDERDES[index].NUMERO_APARTAMENTOS + 
-                            '</p>' +
-                            '</div>' +
-                            '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 fila-2 text-center"  style="border-right: 0.5px solid #b3b3b3;">' +
-                            '<button type="button" class="btn btn-primary boton inmueble" onClick="divFunction($(this))" id=' + DATADISTORDERDES[index].COD_INMUEBLE + '>VER</button>' +
-                            '</div> ' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>';
-                        $('#inmuebles').append(inmuebles);
+                            if (DISTANCIA < 1)
+                            {
+                                DISTANCIA = (DISTANCIA * 1000);
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Mts");
+                            } 
+                            else 
+                            {
+                                DISTANCIA = (parseFloat(DISTANCIA).toFixed(0) + " Km");
+                            }
+
+                            IMAGEN              = RUTA_IMAGEN + DATADISTORDERDES[index].COD_INMUEBLE;
+                            NOMBRE              = DATADISTORDERDES[index].NOMBRE.toUpperCase(); 
+                            UBICACION           = '<span style="font-size:10px;"> ' + DISTANCIA +' de tu ubicacion</span>';
+                            NUMERO_APARTAMENTOS = DATADISTORDERDES[index].NUMERO_APARTAMENTOS;
+                            LINK                = DATADISTORDERDES[index].COD_INMUEBLE;
+                            INMUEBLE_LIST       = INMUEBLE;
+
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$IMAGEN', IMAGEN);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NOMBRE', NOMBRE);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$UBICACION', UBICACION);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$NUMERO_APARTAMENTOS', NUMERO_APARTAMENTOS);
+                            INMUEBLE_LIST = INMUEBLE_LIST.replace('$LINK', LINK);
+
+                            $('#inmuebles').append(INMUEBLE_LIST); 
+                        });
+                        $("#preloader").delay(600).fadeOut("slow");
                     });
-                });  
-                
+                }); 
+
                 $("#error-notificacion").delay(6000).fadeOut("slow");
                 $("#ubicacion-notificacion").delay(6000).fadeOut("slow");
             });
