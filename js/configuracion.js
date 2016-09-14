@@ -12,17 +12,6 @@ var RUTA                    = "/REPMOVIL/";
 var RUTA_IMAGEN             = "http://apartrack.com/REP/modulos/inmuebles/imagenes/"; 
 var RUTA_IMAGEN_APARTAMENTO = "http://apartrack.com/REP/modulos/apartamentos/imagenes/"; 
 
-            /*
-                var LATITUD_INMUEBLE    = null;
-                var LONGITUD_INMUEBLE   = null;
-                //var URL                 = "http://whalepanama.com/REPMOVIL/common/ws_movil.php?format=json";
-                var URL                 = "http://localhost/REPMOVIL/common/ws_movil.php?format=json";
-                
-                var DATA                = null;
-                var RUTA                = "/REPMOVIL/";
-                //var RUTA_IMAGEN         = "http://whalepanama.com/REP/modulos/inmuebles/imagenes/";
-                var RUTA_IMAGEN         = "http://localhost/REP/modulos/inmuebles/imagenes/";
-*/
 
 function call_Ajax_Jsonp(URL, METODO, VALOR, LOADER, ERROR, FN) 
 {
